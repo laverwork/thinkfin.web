@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IdentityModel.Tokens;
 using System.Linq;
@@ -16,10 +17,18 @@ namespace thinkfin.web
 {
     public class Startup
     {
-        private const string ClientUri = @"https://localhost:44303/";
-        private const string IdServBaseUri = @"https://localhost:44300/core";
-        private const string UserInfoEndpoint = IdServBaseUri + @"/connect/userinfo";
-        private const string TokenEndpoint = IdServBaseUri + @"/connect/token";
+        private readonly string _clientUri;
+        private readonly string _idServBaseUri;
+        private readonly string _userInfoEndpoint; 
+        private readonly string _tokenEndpoint;
+
+        public Startup()
+        {
+            _clientUri = ConfigurationManager.AppSettings["ClientUri"];
+            _idServBaseUri = ConfigurationManager.AppSettings["IdServBaseUri"];
+            _userInfoEndpoint = _idServBaseUri + @"/connect/userinfo";
+            _tokenEndpoint = this._idServBaseUri + @"/connect/token";
+        }
 
         public void Configuration(IAppBuilder app)
         {
@@ -29,24 +38,13 @@ namespace thinkfin.web
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions {AuthenticationType = "Cookies"});
 
-            //app.UseIdentityServerBearerTokenAuthentication(new IdentityServerBearerTokenAuthenticationOptions
-            //{
-            //    Authority = "https://localhost:44303/api/marketdata",
-            //    RequiredScopes = new[] { "marketdataApi" }
-            //});
-
-            //var config = new HttpConfiguration();
-            //config.MapHttpAttributeRoutes();
-
-            //app.UseWebApi(config);
-
             app.UseOpenIdConnectAuthentication(
                 new OpenIdConnectAuthenticationOptions
                 {
                     ClientId = "thinkfinweb",
-                    Authority = IdServBaseUri,
-                    RedirectUri = ClientUri,
-                    PostLogoutRedirectUri = ClientUri,
+                    Authority = _idServBaseUri,
+                    RedirectUri = _clientUri,
+                    PostLogoutRedirectUri = _clientUri,
                     ResponseType = "code id_token token",
                     Scope = "openid profile email roles offline_access",
                     SignInAsAuthenticationType = "Cookies",
@@ -60,13 +58,13 @@ namespace thinkfin.web
                                 var nIdentity = new ClaimsIdentity(identity.AuthenticationType, "email", "role");
 
                                 var userInfoClient = new UserInfoClient(
-                                    new Uri(UserInfoEndpoint),
+                                    new Uri(_userInfoEndpoint),
                                     n.ProtocolMessage.AccessToken);
 
                                 var userInfo = await userInfoClient.GetAsync();
                                 userInfo.Claims.ToList().ForEach(x => nIdentity.AddClaim(new Claim(x.Item1, x.Item2)));
 
-                                var tokenClient = new OAuth2Client(new Uri(TokenEndpoint), "thinkfinweb", "idsrv3test");
+                                var tokenClient = new OAuth2Client(new Uri(_tokenEndpoint), "thinkfinweb", "idsrv3test");
                                 var response = await tokenClient.RequestAuthorizationCodeAsync(n.Code, n.RedirectUri);
 
                                 nIdentity.AddClaim(new Claim("access_token", response.AccessToken));
