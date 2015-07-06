@@ -29,6 +29,17 @@ namespace thinkfin.web
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions {AuthenticationType = "Cookies"});
 
+            //app.UseIdentityServerBearerTokenAuthentication(new IdentityServerBearerTokenAuthenticationOptions
+            //{
+            //    Authority = "https://localhost:44303/api/marketdata",
+            //    RequiredScopes = new[] { "marketdataApi" }
+            //});
+
+            //var config = new HttpConfiguration();
+            //config.MapHttpAttributeRoutes();
+
+            //app.UseWebApi(config);
+
             app.UseOpenIdConnectAuthentication(
                 new OpenIdConnectAuthenticationOptions
                 {

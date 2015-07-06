@@ -13,6 +13,13 @@ namespace thinkfin.web
                         "~/Scripts/jquery.slimscroll.js",
                         "~/Scripts/metismenu.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
+                        "~/Scripts/knockout-{version}.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/marketdata").Include(
+                        "~/Scripts/App/Models/companyViewModel.js"));
+
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 

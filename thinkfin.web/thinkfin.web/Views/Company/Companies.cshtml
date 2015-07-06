@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Projects";
+}
+
+@Scripts.Render("~/bundles/marketdata")
+
+<div class="panel-body" data-bind="with: companyListViewModel">
+    @Html.Partial("_CompanyList")
+</div>
+
+
+
+                   
+
+

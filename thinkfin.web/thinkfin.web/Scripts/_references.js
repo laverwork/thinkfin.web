@@ -11,3 +11,4 @@
 /// <reference path="inspinia.js" />
 /// <reference path="metismenu.min.js" />
 /// <reference path="jquery.slimscroll.min.js" />
+/// <reference path="app/models/companyviewmodel.js" />

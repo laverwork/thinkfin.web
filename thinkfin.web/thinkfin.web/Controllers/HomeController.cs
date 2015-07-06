@@ -1,12 +1,23 @@
 ﻿using System.Web.Mvc;
+using Castle.Core.Logging;
+
 
 namespace thinkfin.web.Controllers
 {
     public class HomeController : Controller
     {
+        private ILogger _logger = NullLogger.Instance;
+
+        public ILogger Logger
+        {
+            get { return _logger; }
+            set { _logger = value; }
+        }
+
         [Authorize]
         public ActionResult Index()
         {
+            _logger.Debug("Index");
             return View();
         }
 
