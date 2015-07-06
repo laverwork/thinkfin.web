@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -10,10 +11,9 @@ namespace thinkfin.web.Queries
     {
         public async Task<GetCompaniesResponse> GetAsync()
         {
-
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:222/");
+                client.BaseAddress = new Uri(ConfigurationManager.AppSettings["MarketData.Query"]);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
